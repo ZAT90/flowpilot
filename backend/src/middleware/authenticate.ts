@@ -1,19 +1,23 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from "express";
 
-import { prisma } from '../lib/prisma';
-import { verifyAccessToken } from '../lib/jwt';
+import { verifyAccessToken } from "../lib/jwt";
+import { prisma } from "../lib/prisma";
 
-export async function authenticate(request: Request, response: Response, next: NextFunction) {
+export const authenticate = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
   const authorizationHeader = request.headers.authorization;
 
-  if (!authorizationHeader?.startsWith('Bearer ')) {
+  if (!authorizationHeader?.startsWith("Bearer ")) {
     response.status(401).json({
-      message: 'Authentication required',
+      message: "Authentication required",
     });
     return;
   }
 
-  const token = authorizationHeader.replace('Bearer ', '').trim();
+  const token = authorizationHeader.replace("Bearer ", "").trim();
 
   try {
     const payload = verifyAccessToken(token);
@@ -31,7 +35,7 @@ export async function authenticate(request: Request, response: Response, next: N
 
     if (!user) {
       response.status(401).json({
-        message: 'User for token no longer exists',
+        message: "User for token no longer exists",
       });
       return;
     }
@@ -40,7 +44,7 @@ export async function authenticate(request: Request, response: Response, next: N
     next();
   } catch {
     response.status(401).json({
-      message: 'Invalid or expired token',
+      message: "Invalid or expired token",
     });
   }
-}
+};

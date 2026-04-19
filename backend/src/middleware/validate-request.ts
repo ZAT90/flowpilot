@@ -1,7 +1,7 @@
-import type { NextFunction, Request, Response } from 'express';
-import type { AnyZodObject } from 'zod';
+import type { NextFunction, Request, Response } from "express";
+import type { AnyZodObject } from "zod";
 
-export function validateRequest(schema: AnyZodObject) {
+export const validateRequest = (schema: AnyZodObject) => {
   return async (request: Request, response: Response, next: NextFunction) => {
     const result = await schema.safeParseAsync({
       body: request.body,
@@ -11,7 +11,7 @@ export function validateRequest(schema: AnyZodObject) {
 
     if (!result.success) {
       response.status(400).json({
-        message: 'Validation failed',
+        message: "Validation failed",
         errors: result.error.flatten(),
       });
       return;
@@ -24,4 +24,4 @@ export function validateRequest(schema: AnyZodObject) {
 
     next();
   };
-}
+};

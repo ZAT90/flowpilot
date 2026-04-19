@@ -23,7 +23,7 @@ type UserObj = {
   updatedAt: Date;
 };
 
-function buildAuthResponse(user: UserObj) {
+const buildAuthResponse = (user: UserObj) => {
   return {
     user,
     token: signAccessToken({
@@ -31,9 +31,9 @@ function buildAuthResponse(user: UserObj) {
       email: user.email,
     }),
   };
-}
+};
 
-export async function signup(input: SignupInput) {
+export const signup = async (input: SignupInput) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: input.email },
     select: { id: true },
@@ -72,9 +72,9 @@ export async function signup(input: SignupInput) {
     status: 201 as const,
     body: buildAuthResponse(user),
   };
-}
+};
 
-export async function login(input: LoginInput) {
+export const login = async (input: LoginInput) => {
   const user = await prisma.user.findUnique({
     where: { email: input.email },
     select: {
@@ -120,4 +120,4 @@ export async function login(input: LoginInput) {
       updatedAt: user.updatedAt,
     }),
   };
-}
+};
